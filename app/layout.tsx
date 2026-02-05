@@ -26,14 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* remove default body margin and make body full width */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased m-0 w-full`}
       >
-        <div className="mx-auto max-w-6xl h-screen">
-          <Header />
-          {children}
-        </div>
+        {/* make top-level wrapper full width — allow page components to handle internal padding */}
+       <div className="w-full min-h-screen overflow-x-hidden">
+       <Header />
+      {children}
+       </div>
       </body>
     </html>
   );
 }
+
