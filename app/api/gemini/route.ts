@@ -4,21 +4,20 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const lastMessage = messages?.[messages.length - 1]?.content;
-
-    if (!lastMessage || typeof lastMessage !== "string") {
-      return new Response("Invalid message", { status: 400 });
+    if (!messages || !Array.isArray(messages)) {
+      return new Response("Invalid messages", { status: 400 });
     }
 
+    // Build full conversation history
     const contents = [
       {
         role: "user",
-        parts: [
-          {
-            text: `${SYSTEM_PROMPT}\n\nUser message:\n${lastMessage}`,
-          },
-        ],
+        parts: [{ text: SYSTEM_PROMPT }],
       },
+      ...messages.map((m: any) => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.content }],
+      })),
     ];
 
     const response = await fetch(
